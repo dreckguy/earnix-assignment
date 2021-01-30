@@ -1,22 +1,14 @@
-terraform {
-  required_providers {
-    aws = {
-      source = "hashicorp/aws"
-    }
-  }
+data "archive_file" "lambda" {
+  type        = "zip"
+  source_dir  = "lambda"
+  output_path = "lambda.zip"
 }
 
-provider "aws" {
-   region = "us-east-1"
-}
 
 resource "aws_lambda_function" "example" {
    function_name = "ServerlessExample"
 
-   # The bucket name as created earlier with "aws s3api create-bucket"
-   s3_bucket = "terraform-serverless-example"
-   s3_key    = "v1.0.0/example.zip"
-
+filename = "lambda.zip"
    # "main" is the filename within the zip file (main.js) and "handler"
    # is the name of the property under which the handler function was
    # exported in that file.
@@ -48,4 +40,3 @@ resource "aws_iam_role" "lambda_exec" {
 EOF
 
 }
-
