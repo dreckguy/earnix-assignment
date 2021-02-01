@@ -15,15 +15,15 @@ resource "aws_default_subnet" "default_subnet_c" {
   availability_zone = "eu-central-1c"
 }
 
-resource "aws_ecr_repository" "my_first_ecr_repo" {
-  name = "my-first-ecr-repo"
+resource "aws_ecr_repository" "ecr_repo" {
+  name = "result-sender"
 
   provisioner "local-exec" {
     working_dir = "docker"
     command = <<EOT
-    aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin ${aws_ecr_repository.my_first_ecr_repo.registry_id}.dkr.ecr.eu-central-1.amazonaws.com
-    docker build -t ${aws_ecr_repository.my_first_ecr_repo.repository_url} .
-    docker push ${aws_ecr_repository.my_first_ecr_repo.repository_url}
+    aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin ${aws_ecr_repository.ecr_repo.registry_id}.dkr.ecr.eu-central-1.amazonaws.com
+    docker build -t ${aws_ecr_repository.ecr_repo.repository_url} .
+    docker push ${aws_ecr_repository.ecr_repo.repository_url}
     EOT
   }
 }
@@ -39,7 +39,7 @@ resource "aws_ecs_task_definition" "my_first_task" {
   [
     {
       "name": "my-first-task",
-      "image": "${aws_ecr_repository.my_first_ecr_repo.repository_url}",
+      "image": "${aws_ecr_repository.ecr_repo.repository_url}",
       "essential": true,
       "portMappings": [
         {
