@@ -21,6 +21,7 @@ resource "aws_ecr_repository" "my_first_ecr_repo" {
   provisioner "local-exec" {
     working_dir = "docker"
     command = <<EOT
+    aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin ${aws_ecr_repository.my_first_ecr_repo.registry_id}.dkr.ecr.eu-central-1.amazonaws.com
     docker build -t ${aws_ecr_repository.my_first_ecr_repo.repository_url} .
     docker push ${aws_ecr_repository.my_first_ecr_repo.repository_url}
     EOT
