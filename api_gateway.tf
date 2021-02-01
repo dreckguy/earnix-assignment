@@ -41,6 +41,4 @@ resource "aws_lambda_permission" "apigw" {
    source_arn = "${aws_api_gateway_rest_api.example.execution_arn}/*/*"
 }
 
-output "base_url" {
-  value = aws_api_gateway_deployment.example.invoke_url
-}
+
